@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Chart</title>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <style>
+    .chart {
+      font-family: Arial, sans-serif;
+    }
+    .day {
+      shape-rendering: crispEdges;
+    }
+    rect {
+      fill: #ebedf0;
+    }
+    rect[data-value="1"] { fill: #CC7EEB; }
+    rect[data-value="2"] { fill: #A768C0; }
+    rect[data-value="3"] { fill: #89559E; }
+    rect[data-value="4"] { fill: #6C437C; }
+    text {
+      font-size: 12px;
+      fill: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="chart"></div>
+
+  <script>
+    const cellSize = 15;
+    const chartWidth = 52 * cellSize;
+    const chartHeight = 7 * cellSize;
+    const marginTop = 20;
+    const marginLeft = 40;
+  
+    fetch('./data.json')
+      .then(response => response.json())
+      .then(data => {
+        const svg = d3.select(".chart")
+          .append("svg")
+          .attr("width", chartWidth + marginLeft)
+          .attr("height", chartHeight + marginTop);
+  
+        const days = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+        days.forEach((day, i) => {
+          svg.append("text")
+            .attr("x", marginLeft - 5)
+            .attr("y", marginTop + i * cellSize + cellSize / 1.5)
+            .attr("text-anchor", "end")
+            .text(day);
+        });
+
+        const months = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+        months.forEach((month, i) => {
+          svg.append("text")
+            .attr("x", marginLeft + i * (4 * cellSize))
+            .attr("y", marginTop - 5)
+            .attr("text-anchor", "middle")
+            .text(month);
+        });
+  
+        data.forEach(d => {
+          svg.append("rect")
+            .attr("x", marginLeft + d.week * cellSize)
+            .attr("y", marginTop + d.day * cellSize)
+            .attr("width", cellSize - 1)
+            .attr("height", cellSize - 1)
+            .attr("rx", 3)
+            .attr("ry", 3)
+            .attr("data-value", d.hours);
+        });
+      })
+      .catch(error => O_o(error));
+  </script>
+</body>
+</html>

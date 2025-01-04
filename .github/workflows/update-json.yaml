@@ -1,0 +1,36 @@
+name: Atualizar JSON do Notion
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # Executa à meia-noite UTC
+  workflow_dispatch: # Permite execução manual
+
+jobs:
+  update-json:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v3
+
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+
+      - name: Instalar dependências
+        run: pip install notion-client python-dotenv
+
+      - name: Rodar script para gerar JSON
+        env:
+          NOTION_SECRET: ${{ secrets.NOTION_SECRET }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+        run: python scripts/main.py
+
+      - name: Commit e Push das alterações
+        run: |
+          git config --local user.name "GitHub Actions"
+          git config --local user.email "actions@github.com"
+          git add days.json data.json
+          git commit -m "Atualização automática do JSON"
+          git push
