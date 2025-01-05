@@ -34,8 +34,8 @@
     const chartHeight = 7 * cellSize;
     const marginTop = 20;
     const marginLeft = 40;
-  
-    fetch('./data.json')
+    const timestamp = new Date().getTime();
+    fetch(`data.json?cache-buster=${timestamp}`)
       .then(response => response.json())
       .then(data => {
         const svg = d3.select(".chart")
