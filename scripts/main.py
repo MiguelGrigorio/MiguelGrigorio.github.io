@@ -53,7 +53,7 @@ def main():
     for i in range(len(days)):
         if i != 0 and i % 7 == 0:
             week += 1
-        data.append({'day': i - week, 'week': week, 'hours': days[i]['Horas']})
+        data.append({'day': i - (7 * week), 'week': week, 'hours': days[i]['Horas']})
     dict_to_json(data, 'data.json')
     print('Arquivos gerados com sucesso!')
 
